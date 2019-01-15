@@ -12,6 +12,7 @@ import unittest
 from six.moves.urllib.parse import urlparse, parse_qs
 from instagram import client, oauth2, InstagramAPIError
 from instagram.helper import timestamp_to_datetime
+from instagram.models import UserInPhoto
 
 TEST_AUTH = False
 client_id = "DEBUG"
@@ -256,6 +257,38 @@ class InstagramHelperTests(unittest.TestCase):
         date_time = timestamp_to_datetime(float(self.timestamp))
         self.assertTrue(date_time.tzinfo is not None)
         self.assertEqual(date_time.tzinfo, pytz.UTC)
+
+
+class UserInPhotoTest(unittest.TestCase):
+
+    def test_user_with_missing_id(self):
+        data = {
+            'user': {
+                'username': 'abc'
+            },
+            'position': {
+                'x': 0.4626666667,
+                'y': 0.22533333330000002
+            }
+        }
+
+        user_in_photo = UserInPhoto.object_from_dictionary(data)
+        assert user_in_photo.user is None
+
+    def test_user_with_id(self):
+        data = {
+            'user': {
+                'id': 42,
+                'username': 'abc'
+            },
+            'position': {
+                'x': 0.4626666667,
+                'y': 0.22533333330000002
+            }
+        }
+
+        user_in_photo = UserInPhoto.object_from_dictionary(data)
+        assert user_in_photo.user is not None
 
 
 if __name__ == '__main__':

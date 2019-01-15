@@ -226,7 +226,7 @@ class UserInPhoto(ApiModel):
     @classmethod
     def object_from_dictionary(cls, entry):
         user = None
-        if 'user' in entry:
+        if 'user' in entry and 'id' in entry['user']:
             user = User.object_from_dictionary(entry['user'])
 
         if 'position' in entry:
